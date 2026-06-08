@@ -1,1 +1,22 @@
-<iframe src="https://www.google.com/maps/embed?pb=!4v1780893055914!6m8!1m7!1sZRO5YN-KcY2sop9tIWi5Ow!2m2!1d24.03243180375941!2d90.27017884065906!3f184.89267749813263!4f9.783775459784465!5f0.7820865974627469" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+new maplibregl.Marker()
+.setLngLat([90.2702579,24.0323728])
+.setPopup(
+new maplibregl.Popup()
+.setHTML(`
+<h3>Factory 1</h3>
+<p>Manager: Rahim</p>
+<p>Phone: 017xxxxxxxx</p>
+`)
+)
+.addTo(map);
+
+new maplibregl.Marker()
+.setLngLat([90.2715000,24.0310000])
+.setPopup(
+new maplibregl.Popup()
+.setHTML(`
+<h3>Factory 2</h3>
+<p>Manager: Karim</p>
+`)
+)
+.addTo(map);
