@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Liz Fashion Industry - 3D Map</title>
+
+<script src="https://cesium.com/downloads/cesiumjs/releases/1.118/Build/Cesium/Cesium.js"></script>
+<link href="https://cesium.com/downloads/cesiumjs/releases/1.118/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+
+<style>
+html, body, #cesiumContainer {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+#infoPanel{
+    position:absolute;
+    top:15px;
+    left:15px;
+    width:320px;
+    background:rgba(20,20,20,0.9);
+    color:white;
+    padding:15px;
+    border-radius:12px;
+    z-index:1000;
+    font-family:Arial,sans-serif;
+    box-shadow:0 5px 20px rgba(0,0,0,.4);
+}
+
+#infoPanel h2{
+    margin:0 0 10px;
+    font-size:20px;
+}
+
+#viewBtn{
+    width:100%;
+    padding:10px;
+    margin-top:12px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:15px;
+}
+
+.cesium-viewer-toolbar{
+    top:70px !important;
+}
+</style>
+</head>
+
+<body>
+
+<div id="infoPanel">
+    <h2>Liz Fashion Industry</h2>
+
+    <p><strong>Location:</strong><br>
+    Shafipur, Kaliakoir, Gazipur, Bangladesh</p>
+
+    <p><strong>Latitude:</strong> 24.03214</p>
+    <p><strong>Longitude:</strong> 90.27005</p>
+
+    <button id="viewBtn">
+        View Factory
+    </button>
+</div>
+
+<div id="cesiumContainer"></div>
+
+<script>
+
+Cesium.Ion.defaultAccessToken = "PASTE_YOUR_CESIUM_TOKEN_HERE";
+
+const factoryLon = 90.27005;
+const factoryLat = 24.03214;
+
+const viewer = new Cesium.Viewer("cesiumContainer",{
+    terrain: Cesium.Terrain.fromWorldTerrain(),
+    animation:false,
+    timeline:false,
+    baseLayerPicker:true,
+    geocoder:true,
+    homeButton:true,
+    sceneModePicker:true,
+    navigationHelpButton:true,
+    fullscreenButton:true
+});
+
+viewer.scene.globe.depthTestAgainstTerrain = true;
+
+viewer.camera.flyTo({
+    destination: Cesium.Cartesian3.fromDegrees(
+        factoryLon,
+        factoryLat,
+        2500
+    ),
+    orientation:{
+        heading: Cesium.Math.toRadians(0),
+        pitch: Cesium.Math.toRadians(-45),
+        roll: 0
+    },
+    duration:4
+});
+
+const factory = viewer.entities.add({
+    name:"Liz Fashion Industry",
+    position: Cesium.Cartesian3.fromDegrees(
+        factoryLon,
+        factoryLat
+    ),
+
+    billboard:{
+        image:"https://cdn-icons-png.flaticon.com/512/684/684908.png",
+        scale:0.08
+    },
+
+    label:{
+        text:"Liz Fashion Industry",
+        font:"18px sans-serif",
+        showBackground:true,
+        verticalOrigin:Cesium.VerticalOrigin.TOP,
+        pixelOffset:new Cesium.Cartesian2(0,20)
+    },
+
+    description:`
+        <h2>Liz Fashion Industry</h2>
+        <p><b>Location:</b> Shafipur, Gazipur</p>
+        <p><b>Latitude:</b> 24.03214</p>
+        <p><b>Longitude:</b> 90.27005</p>
+    `
+});
+
+viewer.selectedEntity = factory;
+
+document.getElementById("viewBtn").onclick = function(){
+
+    viewer.flyTo(factory,{
+        offset:new Cesium.HeadingPitchRange(
+            0,
+            Cesium.Math.toRadians(-45),
+            2000
+        )
+    });
+
+};
+
+const handler = new Cesium.ScreenSpaceEventHandler(
+    viewer.scene.canvas
+);
+
+handler.setInputAction(function(click){
+
+    const picked =
+    viewer.scene.pick(click.position);
+
+    if(
+        Cesium.defined(picked) &&
+        picked.id === factory
+    ){
+        viewer.flyTo(factory,{
+            offset:new Cesium.HeadingPitchRange(
+                0,
+                Cesium.Math.toRadians(-45),
+                1500
+            )
+        });
+
+        viewer.selectedEntity = factory;
+    }
+
+}, Cesium.ScreenSpaceEventType.LEFT_CLICK);
+
+</script>
+
+</body>
+</html>
